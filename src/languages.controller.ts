@@ -6,6 +6,6 @@ export class LanguagesController {
 
   @Get()
   languages(): Language[] {
-    return [new Language("typescript"), new Language("java")];
+    return [new Language("typescript"), new Language("java"), new Language("php")];
   }
 }
