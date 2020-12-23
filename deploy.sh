@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p deploy
 npm install
 npm run build
 npm prune --production
