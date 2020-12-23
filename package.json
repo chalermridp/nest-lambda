@@ -37,7 +37,7 @@
     "@types/aws-lambda": "^8.10.67",
     "@types/aws-serverless-express": "^3.3.3",
     "@types/express": "^4.17.8",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^26.0.19",
     "@types/node": "^14.14.6",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
