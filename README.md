@@ -60,6 +60,10 @@ $ npm run test:cov
 
 ## Build, Pack and Deploy to AWS Lambda
 ```bash
+# create s3 bucket to store code and template
+$ aws s3 mb s3://oh-nest-lambda
+
+# run defined deploy script
 $ sh deploy.sh
 ```
 
