@@ -3,7 +3,17 @@ Transform: AWS::Serverless-2016-10-31
 Description: Lambda with nestjs.
 
 Resources:
-  LambdaNestJSFunction:
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: oh-nest-lambda
+      StageName: api
+      EndpointConfiguration: REGIONAL
+      Cors:
+        AllowMethods: "'PUT'"
+        AllowHeaders: "'X-Request-Id,Content-Type'"
+        AllowOrigin: "'*'"
+  ProxyFuncion:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/lambda-entry-point.handler
@@ -18,10 +28,12 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: any
+            RestApiId: !Ref ApiGateway
 
 Outputs:
-  LambdaSpringBootApi:
-    Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/languages'
-    Export:
-      Name: LambdaNestApi
+  ApiGatewayId:
+    Description: Api Gateway Id
+    Value: !Ref ApiGateway
+  ProxyFunctionArn:
+    Description: Proxy Function Arn
+    Value: !GetAtt ProxyFuncion.Arn
