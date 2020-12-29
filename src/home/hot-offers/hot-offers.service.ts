@@ -7,7 +7,7 @@ export class HotOffersService {
   private hotOffers = [];
   async getAll(): Promise<HotOffer[]> {
     const response = await axios.get(
-      'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/hot-offers.json',
+      'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/hot-offers/data.json',
     );
     this.hotOffers = response.data.map((value) => {
       return value;
