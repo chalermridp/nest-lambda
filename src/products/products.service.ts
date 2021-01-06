@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import axios from 'axios';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
+import { ProductDetailsResponse } from './response/product-details.response';
 
 @Injectable()
 export class ProductsService {
@@ -41,5 +42,24 @@ export class ProductsService {
       );
     }
     return products;
+  }
+
+  async getById(productId: string): Promise<ProductDetailsResponse> {
+    if (productId !== '6018026982') {
+      throw new NotFoundException(`Not found product id: ${productId}`);
+    }
+
+    const response = await axios.get(
+      'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/IGHS_Mock_product_detail.json',
+    );
+    console.log(response);
+    const products = response.data.map((value) => {
+      return value;
+    });
+    const result = new ProductDetailsResponse();
+    result.statusCode = 200;
+    result.message = 'success';
+    result.data = products[0];
+    return result;
   }
 }
