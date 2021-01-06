@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
@@ -56,7 +56,6 @@ export class ProductsService {
       });
 
     if (products.length === 0) {
-      // throw new NotFoundException(`Not found product id: ${productId}`);
       throw new HttpException(
         '{ "error_name": "product_not_found", "error_message": "product does not exist"}',
         404,
