@@ -6,6 +6,7 @@ import * as serverlessExpress from 'aws-serverless-express';
 import * as express from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 let lambdaProxy: Server;
 
@@ -26,6 +27,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(nestApp, options);
   SwaggerModule.setup('swagger-ui', nestApp, document);
 
+  nestApp.useGlobalFilters(new HttpExceptionFilter());
   await nestApp.init();
 
   return serverlessExpress.createServer(expressServer);

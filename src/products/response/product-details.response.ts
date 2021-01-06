@@ -1,5 +1,5 @@
 export class ProductDetailsResponse {
-  statusCode: number;
+  code: number;
   message: string;
   data: string;
   error: string;
