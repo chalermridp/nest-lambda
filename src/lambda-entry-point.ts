@@ -5,6 +5,7 @@ import { Context } from 'aws-lambda';
 import * as serverlessExpress from 'aws-serverless-express';
 import * as express from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 let lambdaProxy: Server;
 
@@ -17,13 +18,21 @@ async function bootstrap() {
       cors: true,
     },
   );
+  const options = new DocumentBuilder()
+    .setTitle('Mock Shopping Online API 555')
+    .setVersion('1.0')
+    .addServer('/api')
+    .build();
+  const document = SwaggerModule.createDocument(nestApp, options);
+  SwaggerModule.setup('swagger-ui', nestApp, document);
+
   await nestApp.init();
 
   return serverlessExpress.createServer(expressServer);
 }
 
 export const handler = (event: any, context: Context) => {
-    if (!lambdaProxy) {
+  if (!lambdaProxy) {
     bootstrap().then((server) => {
       lambdaProxy = server;
       serverlessExpress.proxy(lambdaProxy, event, context);
