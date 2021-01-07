@@ -29,7 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-ui', nestApp, document);
 
   nestApp.useGlobalFilters(
-    new UnexpectedErrorFilter(),
+    // new UnexpectedErrorFilter(),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );
