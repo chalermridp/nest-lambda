@@ -1,5 +1,5 @@
 import { Server } from 'http';
-import { BaseExceptionFilter, HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Context } from 'aws-lambda';
 import * as serverlessExpress from 'aws-serverless-express';
@@ -7,7 +7,7 @@ import * as express from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
-import { UnexpectedErrorFilter } from './filters/unexpected-error.filter';
+import { BaseExceptionFilter } from './filters/base-exception.filter';
 
 let lambdaProxy: Server;
 
@@ -29,7 +29,6 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-ui', nestApp, document);
 
   nestApp.useGlobalFilters(
-    // new UnexpectedErrorFilter(),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );
