@@ -20,6 +20,6 @@ export class ProductsController {
   async getById(
     @Param('productId') productId: string,
   ): Promise<ProductDetailsResponse> {
-    return this.productsService.getById(productId);
+    return await this.productsService.getById(productId);
   }
 }
