@@ -17,9 +17,9 @@ export class ProductsController {
 
   @Get('/:productId')
   @ApiOperation({ summary: 'Get Product Details' })
-  async getById(
+  getById(
     @Param('productId') productId: string,
   ): Promise<ProductDetailsResponse> {
-    return await this.productsService.getById(productId);
+    return this.productsService.getById(productId);
   }
 }
