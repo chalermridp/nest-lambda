@@ -28,9 +28,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(nestApp, options);
   SwaggerModule.setup('swagger-ui', nestApp, document);
 
-  const { httpAdapter } = nestApp.get(HttpAdapterHost);
   nestApp.useGlobalFilters(
-    new UnexpectedErrorFilter(httpAdapter),
+    new UnexpectedErrorFilter(),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );

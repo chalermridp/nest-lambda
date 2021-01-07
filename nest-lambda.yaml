@@ -17,7 +17,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: dist/lambda-entry-point.handler
-      Runtime: nodejs10.x
+      Runtime: nodejs12.x
       CodeUri: deploy/nest-lambda.zip
       MemorySize: 1512
       Policies: AWSLambdaBasicExecutionRole

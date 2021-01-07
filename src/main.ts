@@ -15,9 +15,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger-ui', app, document);
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
-    new UnexpectedErrorFilter(httpAdapter),
+    new UnexpectedErrorFilter(),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );
