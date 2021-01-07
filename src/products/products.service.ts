@@ -1,8 +1,6 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { HelloException } from 'src/exceptions/hello.exception';
 import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
-import { HttpExceptionFilter } from 'src/filters/http-exception.filter';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
 import { ProductDetailsResponse } from './response/product-details.response';
