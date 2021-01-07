@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { HelloException } from 'src/exceptions/hello.exception';
 import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
@@ -46,6 +47,10 @@ export class ProductsService {
   }
 
   async getById(productId: string): Promise<ProductDetailsResponse> {
+    if (productId === 'hello') {
+      throw new HelloException();
+    }
+
     const response = await axios.get(
       'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/IGHS_Mock_product_detail.json',
     );

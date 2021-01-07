@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { BaseExceptionFilter } from './filters/base-exception.filter';
@@ -15,8 +15,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger-ui', app, document);
 
+  const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
-    new UnexpectedErrorFilter(),
+    new UnexpectedErrorFilter(httpAdapter),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );
