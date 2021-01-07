@@ -8,6 +8,7 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { BaseExceptionFilter } from './filters/base-exception.filter';
+import { UnexpectedErrorFilter } from './filters/unexpected-error.filter';
 
 let lambdaProxy: Server;
 
@@ -29,6 +30,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger-ui', nestApp, document);
 
   nestApp.useGlobalFilters(
+    new UnexpectedErrorFilter(),
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );

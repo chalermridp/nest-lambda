@@ -48,6 +48,9 @@ export class ProductsService {
   }
 
   async getById(productId: string): Promise<ProductDetailsResponse> {
+    if (productId === 'hello') {
+      throw new HelloException();
+    }
     const response = await axios.get(
       'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/IGHS_Mock_product_detail.json',
     );
@@ -58,14 +61,14 @@ export class ProductsService {
       });
 
     if (products.length === 0) {
-      throw new HttpException(
-        '{ "error_name": "product_not_found", "error_message": "product does not exist"}',
-        404,
-      );
-      // throw new ProductNotFoundException(
-      //   'product_not_found',
-      //   'product does not exist',
+      // throw new HttpException(
+      //   '{ "error_name": "product_not_found", "error_message": "product does not exist"}',
+      //   404,
       // );
+      throw new ProductNotFoundException(
+        'product_not_found',
+        'product does not exist',
+      );
     }
 
     const result = new ProductDetailsResponse();
