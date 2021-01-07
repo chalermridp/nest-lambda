@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  variables:
+    # this value can override during manual build for dev, ppe and prod
+    STAGE: "dev"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+  pre_build:
+    commands:
+      - mkdir -p deploy
+      - npm install
+  build:
+    commands:
+      - npm run build
+      - npm prune --production
+      - zip -r deploy/nest-lambda.zip dist/ node_modules
+  post_build:
+    commands:
+      - aws cloudformation package --template-file nest-lambda.yaml --s3-bucket oh-nest-lambda --output-template-file deploy/nest-lambda.out.yaml
+      - aws cloudformation deploy --template-file deploy/nest-lambda.out.yaml --stack-name oh-nest-lambda --capabilities CAPABILITY_IAM
