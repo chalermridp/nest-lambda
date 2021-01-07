@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
 import { ProductDetailsResponse } from './response/product-details.response';
@@ -48,7 +49,6 @@ export class ProductsService {
     const response = await axios.get(
       'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/IGHS_Mock_product_detail.json',
     );
-    console.log(response);
     const products = response.data
       .filter((i) => i.product.id === productId)
       .map((value) => {
@@ -56,9 +56,9 @@ export class ProductsService {
       });
 
     if (products.length === 0) {
-      throw new HttpException(
-        '{ "error_name": "product_not_found", "error_message": "product does not exist"}',
-        404,
+      throw new ProductNotFoundException(
+        'product_not_found',
+        'product does not exist',
       );
     }
 
