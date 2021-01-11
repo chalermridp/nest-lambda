@@ -1,3 +1,4 @@
+import { BadRequestException, HttpException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
@@ -45,9 +46,22 @@ export class ProductsService {
     return products;
   }
 
-  async getById(productId: string): Promise<ProductDetailsResponse> {
+  async getById(
+    productId: string,
+    language: string,
+  ): Promise<ProductDetailsResponse> {
+    if (typeof language === 'undefined') {
+      language = 'en';
+    }
+    if (language !== 'en' && language !== 'th') {
+      throw new HttpException(
+        '{ "error_name": "invalid_params", "error_message": "language must be \'en\' or \'th\'" }',
+        400,
+      );
+    }
+
     const response = await axios.get(
-      'https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/IGHS_Mock_product_detail.json',
+      `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_${language}.json`,
     );
     const products = response.data
       .filter((i) => i.product.id === productId)

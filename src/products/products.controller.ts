@@ -19,7 +19,8 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get Product Details' })
   getById(
     @Param('productId') productId: string,
+    @Query('lang') language: string,
   ): Promise<ProductDetailsResponse> {
-    return this.productsService.getById(productId);
+    return this.productsService.getById(productId, language);
   }
 }
