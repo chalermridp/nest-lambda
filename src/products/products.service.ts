@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
