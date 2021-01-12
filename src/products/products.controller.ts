@@ -15,19 +15,23 @@ export class ProductsController {
   async getFiltered(
     @Query() filterDto: ProductFilterDto,
   ): Promise<BaseResponse<ProductsResponse>> {
-    const response = new BaseResponse<ProductsResponse>();
-    response.code = 200;
-    response.message = 'success';
-    response.data = await this.productsService.getFiltered(filterDto);
+    const data = await this.productsService.getFiltered(filterDto);
+    const response = new BaseResponse<ProductsResponse>(200, 'success', data);
     return response;
   }
 
   @Get('/:productId')
   @ApiOperation({ summary: 'Get Product Details' })
-  getById(
+  async getById(
     @Param('productId') productId: string,
     @Query('lang') language: string,
-  ): Promise<ProductDetailsResponse> {
-    return this.productsService.getById(productId, language);
+  ): Promise<BaseResponse<ProductDetailsResponse>> {
+    const data = await this.productsService.getById(productId, language);
+    const response = new BaseResponse<ProductDetailsResponse>(
+      200,
+      'success',
+      data,
+    );
+    return response;
   }
 }

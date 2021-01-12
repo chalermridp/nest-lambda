@@ -82,7 +82,7 @@ export class ProductsService {
     const response = await axios.get(
       `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_${language}.json`,
     );
-    const products = response.data
+    const products: ProductDetailsResponse[] = response.data
       .filter((i) => i.product.id === productId)
       .map((value) => {
         return value;
@@ -95,10 +95,6 @@ export class ProductsService {
       );
     }
 
-    const result = new ProductDetailsResponse();
-    result.code = 200;
-    result.message = 'success';
-    result.data = products[0];
-    return result;
+    return products[0];
   }
 }
