@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { BaseResponse } from 'src/common/responses/base.response';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { ProductsService } from './products.service';
 import { ProductDetailsResponse } from './response/product-details.response';
@@ -11,8 +12,14 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'Get Filtered Products' })
-  getFiltered(@Query() filterDto: ProductFilterDto): Promise<ProductsResponse> {
-    return this.productsService.getFiltered(filterDto);
+  async getFiltered(
+    @Query() filterDto: ProductFilterDto,
+  ): Promise<BaseResponse<ProductsResponse>> {
+    const response = new BaseResponse<ProductsResponse>();
+    response.code = 200;
+    response.message = 'success';
+    response.data = await this.productsService.getFiltered(filterDto);
+    return response;
   }
 
   @Get('/:productId')

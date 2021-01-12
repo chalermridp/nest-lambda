@@ -57,14 +57,12 @@ export class ProductsService {
     limit = +limit;
     products = products.slice(offset, offset + limit);
 
-    const result = new ProductsResponse();
-    result.code = 200;
-    result.message = 'success';
-    result.total = total;
-    result.offset = +offset;
-    result.limit = +limit;
-    result.data = products;
-    return result;
+    const data = new ProductsResponse();
+    data.total = total;
+    data.offset = offset;
+    data.limit = limit;
+    data.items = products;
+    return data;
   }
 
   async getById(
