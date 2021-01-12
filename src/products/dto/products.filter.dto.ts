@@ -22,4 +22,7 @@ export class ProductFilterDto {
     required: false,
   })
   keyword: string;
+
+  limit: number;
+  offset: number;
 }

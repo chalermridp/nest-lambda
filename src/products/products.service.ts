@@ -5,6 +5,7 @@ import { ProductNotFoundException } from 'src/exceptions/product-not-found.excep
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
 import { ProductDetailsResponse } from './response/product-details.response';
+import { ProductsResponse } from './response/products.response';
 
 @Injectable()
 export class ProductsService {
@@ -18,7 +19,7 @@ export class ProductsService {
     return products;
   }
 
-  async getFiltered(filterDto: ProductFilterDto): Promise<Product[]> {
+  async getFiltered(filterDto: ProductFilterDto): Promise<ProductsResponse> {
     let products = await this.getAll();
     if (typeof filterDto.keyword !== 'undefined') {
       products = products.filter((p) =>
@@ -43,7 +44,27 @@ export class ProductsService {
         (p) => p.categoryLevel3 === filterDto.categoryLevel3,
       );
     }
-    return products;
+
+    let { limit, offset } = filterDto;
+    if (typeof limit === 'undefined') {
+      limit = 100;
+    }
+    if (typeof offset === 'undefined') {
+      offset = 0;
+    }
+    const total = products.length;
+    offset = +offset;
+    limit = +limit;
+    products = products.slice(offset, offset + limit);
+
+    const result = new ProductsResponse();
+    result.code = 200;
+    result.message = 'success';
+    result.total = total;
+    result.offset = +offset;
+    result.limit = +limit;
+    result.data = products;
+    return result;
   }
 
   async getById(

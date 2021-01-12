@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ProductFilterDto } from './dto/products.filter.dto';
-import { Product } from './products.model';
 import { ProductsService } from './products.service';
 import { ProductDetailsResponse } from './response/product-details.response';
+import { ProductsResponse } from './response/products.response';
 
 @Controller('products')
 export class ProductsController {
@@ -11,7 +11,7 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'Get Filtered Products' })
-  getFiltered(@Query() filterDto: ProductFilterDto): Promise<Product[]> {
+  getFiltered(@Query() filterDto: ProductFilterDto): Promise<ProductsResponse> {
     return this.productsService.getFiltered(filterDto);
   }
 
