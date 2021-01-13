@@ -2,6 +2,13 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Lambda with nestjs.
 
+Mappings:
+  Common:
+    Route53:
+      HostedZoneId: Z1DH49C07HHAT1
+      DomainName: seacust-test-domain.com
+      CertificateArn: arn:aws:acm:ap-southeast-1:393437166688:certificate/01d27c19-907f-496a-8e9e-11458be0bad6
+
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
@@ -29,6 +36,30 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref ApiGateway
+
+  CustomDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Join ['.', [oh-test-bff, !FindInMap [Common, Route53, DomainName]]]
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !FindInMap [Common, Route53, CertificateArn]
+  BasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref CustomDomainName
+      RestApiId: !Ref ApiGateway
+      Stage: api
+  ApiGatewayRoute53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties: 
+      Name: !Join ['.', [oh-test-bff, !FindInMap [Common, Route53, DomainName]]]
+      Type: A
+      HostedZoneId: !FindInMap [Common, Route53, HostedZoneId]
+      AliasTarget:
+        DNSName: !GetAtt CustomDomainName.RegionalDomainName
+        HostedZoneId: !GetAtt CustomDomainName.RegionalHostedZoneId
 
 Outputs:
   ApiGatewayId:
