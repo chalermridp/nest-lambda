@@ -40,7 +40,7 @@ Resources:
   CustomDomainName:
     Type: AWS::ApiGateway::DomainName
     Properties:
-      DomainName: !Join ['.', [oh-test-bff, !FindInMap [Common, Route53, DomainName]]]
+      DomainName: !Join ['.', [shopping-online-bff, !FindInMap [Common, Route53, DomainName]]]
       EndpointConfiguration:
         Types:
           - REGIONAL
@@ -54,7 +54,7 @@ Resources:
   ApiGatewayRoute53RecordSet:
     Type: AWS::Route53::RecordSet
     Properties: 
-      Name: !Join ['.', [oh-test-bff, !FindInMap [Common, Route53, DomainName]]]
+      Name: !Join ['.', [shopping-online-bff, !FindInMap [Common, Route53, DomainName]]]
       Type: A
       HostedZoneId: !FindInMap [Common, Route53, HostedZoneId]
       AliasTarget:
