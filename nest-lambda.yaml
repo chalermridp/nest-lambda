@@ -36,6 +36,13 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref ApiGateway
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-07d7a268df0c22276
+        SubnetIds:
+          - subnet-061d24d342cd7eb40
+          - subnet-08b1db37e751ce1dc
+          - subnet-0ce150f90b7f2ee10
 
   CustomDomainName:
     Type: AWS::ApiGateway::DomainName
