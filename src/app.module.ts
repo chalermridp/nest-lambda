@@ -7,7 +7,13 @@ import { TerminusModule } from '@nestjs/terminus';
 import { PromotionBannersModule } from './promotion-banners/promotion-banners.module';
 
 @Module({
-  imports: [TerminusModule, HomeModule, CategoriesModule, ProductsModule, PromotionBannersModule],
+  imports: [
+    TerminusModule,
+    HomeModule,
+    CategoriesModule,
+    ProductsModule,
+    PromotionBannersModule,
+  ],
   controllers: [HealthController],
 })
 export class AppModule {}

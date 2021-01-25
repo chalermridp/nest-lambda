@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ProductNotFoundException } from 'src/exceptions/product-not-found.exception';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { Product } from './products.model';
+import { ProductDetailsResponseV2 } from './response/product-details.reponse.v2';
 import { ProductDetailsResponse } from './response/product-details.response';
 import { ProductsResponse } from './response/products.response';
 
@@ -83,6 +84,39 @@ export class ProductsService {
       `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_${language}.json`,
     );
     const products: ProductDetailsResponse[] = response.data
+      .filter((i) => i.product.id === productId)
+      .map((value) => {
+        return value;
+      });
+
+    if (products.length === 0) {
+      throw new ProductNotFoundException(
+        'product_not_found',
+        'product does not exist',
+      );
+    }
+
+    return products[0];
+  }
+
+  async getByIdV2(
+    productId: string,
+    language: string,
+  ): Promise<ProductDetailsResponseV2> {
+    if (typeof language === 'undefined') {
+      language = 'en';
+    }
+    if (language !== 'en' && language !== 'th') {
+      throw new HttpException(
+        '{ "error_name": "invalid_params", "error_message": "language must be \'en\' or \'th\'" }',
+        400,
+      );
+    }
+
+    const response = await axios.get(
+      `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_v2_${language}.json`,
+    );
+    const products: ProductDetailsResponseV2[] = response.data
       .filter((i) => i.product.id === productId)
       .map((value) => {
         return value;
