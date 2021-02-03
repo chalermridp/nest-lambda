@@ -13,11 +13,9 @@ import { BasketSummary } from './responses/baskets.summary';
 export class BasketsService {
   private baskets: { [id: string]: BasketsResponse } = {};
   constructor(private productsService: ProductsService) {
-    this.baskets[1] = new BasketsResponse();
-    this.baskets[1].products = [];
+    this.baskets["1"] = new BasketsResponse();
+    this.baskets["1"].products = [];
   }
-
-  private productBasketUpdateDtoDic: { [basketId: string]: ProductBasketUpdateDto[] } = {};
 
   async getById(basketId: string, language: string): Promise<BasketsResponse> {
     if (typeof language === 'undefined') {
@@ -30,37 +28,42 @@ export class BasketsService {
       );
     }
 
-    const response = await axios.get(
-      `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/basket/baskets_v1_${language}.json`,
-    );
-    const baskets: BasketsResponse[] = response.data
-      .filter((i) => i.basket.id === basketId)
-      .map((value) => {
-        return value.basket;
-      });
-
-    if (baskets.length === 0) {
+    const basket = this.baskets[basketId];
+    if (!basket) {
       throw new BasketNotFoundException(
         'basket_not_found',
         'basket does not exist',
       );
     }
 
-    let basket = baskets[0];
-    const basketUpdateDto = this.productBasketUpdateDtoDic[basketId];
-    if (basketUpdateDto) {
-      basket.products = basket.products.filter(value => basketUpdateDto.map(i => i.id).includes(value.id));
-      basket.products.map(value => {
-        value.amount = basketUpdateDto.find(i => i.id === value.id).amount;
-        value.total_price = value.unit_price * value.amount;
-      })
-    }
-    basket.summary = new BasketSummary(basket.products);
+    const response = await axios.get(
+      `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_v2_${language}.json`,
+    );
+    const productDetails = response.data;
+    basket.products.forEach(value => {
+      value.name = productDetails.find(i => i.product.id === value.id).product.title;
+      const optional = this.getOptionalFields(value.id, language);
+      if (optional) {
+        value.optional = [];
+        value.optional.push(optional);
+      }
+    })
+    basket.summary = new BasketSummary(basket.products, language);
     return basket;
   }
 
   async updateById(basketId: string, language: string, basketUpdateDto: BasketUpdateDto): Promise<BasketsResponse> {
-    this.productBasketUpdateDtoDic[basketId] = basketUpdateDto.products;
+    const basket = this.baskets[basketId];
+    if (typeof basket === 'undefined') {
+      throw new BasketNotFoundException(
+        'basket_not_found',
+        'basket does not exist',
+      );
+    }
+
+    basket.products.forEach(value => {
+      value.amount = basketUpdateDto.products.find(i => i.id === value.id).amount;
+    })
     return await this.getById(basketId, language);
   }
 
