@@ -21,6 +21,11 @@ export class BasketsService {
     this.addProductToBasket("2", "en", { id: "99010101", amount: 3 });
     this.addProductToBasket("2", "en", { id: "99010102", amount: 7 });
     this.addProductToBasket("2", "en", { id: "99010103", amount: 4 });
+    this.addProductToBasket("2", "en", { id: "99010104", amount: 11 });
+    this.addProductToBasket("2", "en", { id: "99010105", amount: 23 });
+    this.addProductToBasket("2", "en", { id: "99010106", amount: 50 });
+    this.addProductToBasket("2", "en", { id: "99010107", amount: 3 });
+    this.addProductToBasket("2", "en", { id: "99010108", amount: 19 });
   }
 
   async getById(basketId: string, language: string): Promise<BasketsResponse> {
