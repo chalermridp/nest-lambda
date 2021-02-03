@@ -73,47 +73,55 @@ export class BasketsService {
       );
     }
 
-    const existingBasketProduct = basket.products.find(i => i.id === addProductToBasketDto.id);
-    if (existingBasketProduct) {
-      existingBasketProduct.amount += addProductToBasketDto.amount;
-      existingBasketProduct.total_price = existingBasketProduct.unit_price * existingBasketProduct.amount;
+    const response = await this.productsService.getByIdV2(addProductToBasketDto.id, language);
+    const product = response.product;
+    const productPrice = response.product.prices.find(i => i.unit_of_measure === 'Each') || response.product.prices[0];
+
+    let basketProduct = basket.products.find(i => i.id === addProductToBasketDto.id);
+    if (basketProduct) {
+      basketProduct.amount += addProductToBasketDto.amount;
     }
     else {
-      const response = await this.productsService.getByIdV2(addProductToBasketDto.id, language);
-      const product = response.product;
-      const productPrice = response.product.prices.find(i => i.unit_of_measure === 'Each') || response.product.prices[0];
-      let basketProduct = new BasketProduct();
-      basketProduct.id = product.id;
-      basketProduct.name = product.title;
-      basketProduct.original_price = productPrice.original_price;
-      basketProduct.discounted_price = productPrice.discounted_price;
-      basketProduct.unit_price = productPrice.unit_price;
-      basketProduct.unit_of_measure = productPrice.unit_of_measure;
+      basketProduct = new BasketProduct();
       basketProduct.amount = addProductToBasketDto.amount;
-      basketProduct.total_price = basketProduct.unit_price * basketProduct.amount;
-      basketProduct.min_amount = 0;
-      basketProduct.max_amount = 10;
-      basketProduct.image_url = product.resources[0].url;
-      const optional = this.getOptionalFields(basketProduct.id);
-      if (optional) {
-        basketProduct.optional = [];
-        basketProduct.optional.push(optional)
-      }
       basket.products.push(basketProduct);
     }
-    basket.summary = new BasketSummary(basket.products);
-    return basket;
+
+    basketProduct.name = product.title;
+    basketProduct.id = product.id;
+    basketProduct.original_price = productPrice.original_price;
+    basketProduct.discounted_price = productPrice.discounted_price;
+    basketProduct.unit_price = productPrice.unit_price;
+    basketProduct.unit_of_measure = productPrice.unit_of_measure;
+    basketProduct.total_price = productPrice.unit_price * basketProduct.amount;
+    basketProduct.min_amount = 0;
+    basketProduct.max_amount = 10;
+    basketProduct.image_url = product.resources[0].url;
+    const optional = this.getOptionalFields(basketProduct.id, language);
+    if (optional) {
+      basketProduct.optional = [];
+      basketProduct.optional.push(optional)
+    }
+    return basketProduct;
   }
 
-  getOptionalFields(productId: string): any {
+
+  getOptionalFields(productId: string, language: string): any {
+    let missedPromotionText = "Missed promotion ! This product was ฿39.00 until 23 Dec. 2020";
+    let removeSomeItemText = "or remove some of this item to check out";
+    if (language == 'th') {
+      missedPromotionText = 'พลาดโปรโมชั่น! สินค้าชิ้นนี้เคยราคา 39 บาท จนถึง 23 ธันวาคม 2563';
+      removeSomeItemText = 'ลบสินค้าบางอย่างออก แล้วเช็คเอาท์'
+    }
+
     if (+productId % 4 === 0) {
-      return { missed_promotion_text: "Missed promotion ! This product was ฿39.00 until 23 Dec. 2020" };
+      return { missed_promotion_text: missedPromotionText };
     } else if (+productId % 3 === 0) {
-      return { remove_some_item_text: "or remove some of this item to check out" };
+      return { remove_some_item_text: removeSomeItemText };
     } else if (+productId % 2 === 0) {
       return {
-        missed_promotion_text: "Missed promotion ! This product was ฿39.00 until 23 Dec. 2020",
-        remove_some_item_text: "or remove some of this item to check out"
+        missed_promotion_text: missedPromotionText,
+        remove_some_item_text: removeSomeItemText
       };
     } else {
       return null;
