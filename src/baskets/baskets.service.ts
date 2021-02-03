@@ -15,6 +15,12 @@ export class BasketsService {
   constructor(private productsService: ProductsService) {
     this.baskets["1"] = new BasketsResponse();
     this.baskets["1"].products = [];
+
+    this.baskets["2"] = new BasketsResponse();
+    this.baskets["2"].products = [];
+    this.addProductToBasket("2", "en", { id: "99010101", amount: 3 });
+    this.addProductToBasket("2", "en", { id: "99010102", amount: 7 });
+    this.addProductToBasket("2", "en", { id: "99010103", amount: 4 });
   }
 
   async getById(basketId: string, language: string): Promise<BasketsResponse> {
@@ -129,5 +135,10 @@ export class BasketsService {
     } else {
       return null;
     }
+  }
+
+  mockBasketProducts() {
+    const products = [];
+    return products;
   }
 }
