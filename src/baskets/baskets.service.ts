@@ -67,8 +67,13 @@ export class BasketsService {
       );
     }
 
+    basket.products = basket.products.filter(value => basketUpdateDto.products.map(i => i.id).includes(value.id));
     basket.products.forEach(value => {
-      value.amount = basketUpdateDto.products.find(i => i.id === value.id).amount;
+      const updateDto = basketUpdateDto.products.find(i => i.id === value.id);
+      if (updateDto) {
+        value.amount = updateDto.amount;
+        value.total_price = value.unit_price * value.amount;
+      }
     })
     return await this.getById(basketId, language);
   }
