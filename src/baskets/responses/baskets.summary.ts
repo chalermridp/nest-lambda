@@ -9,7 +9,7 @@ export class BasketSummary {
   free_delivery_hint_text: string;
 
   constructor(basketProducts: BasketProduct[]) {
-    this.items = basketProducts.length;
+    this.items = basketProducts.map(i => i.amount).reduce((sum, current) => sum + current)
     this.guide_price = basketProducts.map(i => i.original_price * i.amount).reduce((sum, current) => sum + current);
     this.saved = basketProducts.map(i => i.discounted_price * i.amount).reduce((sum, current) => sum + current);
     this.order_total = basketProducts.map(i => i.unit_price * i.amount).reduce((sum, current) => sum + current);
