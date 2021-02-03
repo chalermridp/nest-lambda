@@ -5,4 +5,10 @@ export class BasketProduct {
   unit_price: number;
   amount: number;
   total_price: number;
+  name: string;
+  unit_of_measure: String;
+  min_amount: number;
+  max_amount: number;
+  image_url: string;
+  optional: any[];
 }
