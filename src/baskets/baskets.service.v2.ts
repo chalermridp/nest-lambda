@@ -14,7 +14,7 @@ export class BasketsServiceV2 {
   constructor(
     private productsService: ProductsService,
     private s3FileHelper: S3FileHelper,
-  ) { }
+  ) {}
 
   private BUCKET_NAME = 'oh-shopping-online';
   private BASKET_FOLDER_NAME = 'basket';
