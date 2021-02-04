@@ -101,16 +101,19 @@ export class BasketsServiceV2 {
         'basket does not exist',
       );
     }
-    const newBasket: BasketsResponse = JSON.parse(basketInS3);
-    newBasket.products = newBasket.products.filter((value) =>
+    const basket: BasketsResponse = JSON.parse(basketInS3);
+    basket.products = basket.products.filter((value) =>
       basketUpdateDto.products.map((i) => i.id).includes(value.id),
     );
 
-    newBasket.products.forEach((value) => {
+    basket.products.forEach((value) => {
       const dto = basketUpdateDto.products.find((i) => i.id === value.id);
       value.amount = dto.amount;
     });
-    const content = JSON.stringify(newBasket);
+
+    basket.products = basket.products.filter((value) => value.amount > 0);
+
+    const content = JSON.stringify(basket);
     await this.s3FileHelper.uploadPublicFile(
       this.BUCKET_NAME,
       `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
@@ -159,6 +162,7 @@ export class BasketsServiceV2 {
       newBasketProduct.amount = updateBasketProductDto.amount;
       basket.products.push(newBasketProduct);
     }
+    basket.products = basket.products.filter((value) => value.amount > 0);
 
     const content = JSON.stringify(basket);
     await this.s3FileHelper.uploadPublicFile(
