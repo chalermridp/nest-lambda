@@ -14,7 +14,7 @@ export class BasketsServiceV2 {
   constructor(
     private productsService: ProductsService,
     private s3FileHelper: S3FileHelper,
-  ) {}
+  ) { }
 
   private BUCKET_NAME = 'oh-shopping-online';
   private BASKET_FOLDER_NAME = 'basket';
@@ -101,7 +101,16 @@ export class BasketsServiceV2 {
         'basket does not exist',
       );
     }
-    const content = JSON.stringify(basketUpdateDto);
+    const newBasket: BasketsResponse = JSON.parse(basketInS3);
+    newBasket.products = newBasket.products.filter((value) =>
+      basketUpdateDto.products.map((i) => i.id).includes(value.id),
+    );
+
+    newBasket.products.forEach((value) => {
+      const dto = basketUpdateDto.products.find((i) => i.id === value.id);
+      value.amount = dto.amount;
+    });
+    const content = JSON.stringify(newBasket);
     await this.s3FileHelper.uploadPublicFile(
       this.BUCKET_NAME,
       `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
