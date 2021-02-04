@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { BasketsService } from './baskets.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
@@ -8,7 +16,7 @@ import { BasketsResponse } from './responses/baskets.response';
 
 @Controller('v1/baskets')
 export class BasketsController {
-  constructor(private basketsService: BasketsService) { }
+  constructor(private basketsService: BasketsService) {}
 
   @Get('/:basketId')
   async getById(
@@ -26,7 +34,11 @@ export class BasketsController {
     @Query('lang') language: string,
     @Body() basketUpdateDto: BasketUpdateDto,
   ) {
-    const data = await this.basketsService.updateById(basketId, language, basketUpdateDto);
+    const data = await this.basketsService.updateById(
+      basketId,
+      language,
+      basketUpdateDto,
+    );
     const response = new BaseResponse<BasketsResponse>(200, 'success', data);
     return response;
   }
@@ -35,8 +47,13 @@ export class BasketsController {
   async addProductToBasket(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
-    @Body() addProductToBasketDto: ProductBasketCreateDto) {
-    const data = await this.basketsService.addProductToBasket(basketId, language, addProductToBasketDto);
+    @Body() addProductToBasketDto: ProductBasketCreateDto,
+  ) {
+    const data = await this.basketsService.addProductToBasket(
+      basketId,
+      language,
+      addProductToBasketDto,
+    );
     const response = new BaseResponse<BasketProduct>(200, 'success', data);
     return response;
   }
