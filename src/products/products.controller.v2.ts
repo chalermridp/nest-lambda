@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { ProductsService } from './products.service';
 import { ProductDetailsResponseV2 } from './response/product-details.reponse.v2';
@@ -9,7 +9,8 @@ export class ProductsControllerV2 {
   constructor(private productsService: ProductsService) {}
 
   @Get('/:productId')
-  @ApiOperation({ summary: 'Get Product Details' })
+  @ApiOperation({ summary: 'Get Product Details V2' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async getById(
     @Param('productId') productId: string,
     @Query('lang') language: string,

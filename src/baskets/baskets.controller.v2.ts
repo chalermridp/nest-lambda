@@ -7,6 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { BasketsServiceV2 } from './baskets.service.v2';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
@@ -16,7 +17,10 @@ import { BasketsResponse } from './responses/baskets.response';
 @Controller('v2/baskets')
 export class BasketsControllerV2 {
   constructor(private basketsService2: BasketsServiceV2) {}
+
   @Get('/:basketId')
+  @ApiOperation({ summary: 'Get Basket by Id V2' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async getById(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
@@ -27,6 +31,8 @@ export class BasketsControllerV2 {
   }
 
   @Patch('/:basketId')
+  @ApiOperation({ summary: 'Update Basket V2' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async updateById(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
@@ -42,6 +48,8 @@ export class BasketsControllerV2 {
   }
 
   @Post('/:basketId/products')
+  @ApiOperation({ summary: 'Update Product in Basket V2' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async updateBasketProduct(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,

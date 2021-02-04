@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import {
   DNSHealthIndicator,
   HealthCheck,
@@ -14,6 +15,7 @@ export class HealthController {
 
   @Get()
   @HealthCheck()
+  @ApiOperation({ summary: 'Health Check' })
   check() {
     return this.health.check([
       () => this.dns.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),

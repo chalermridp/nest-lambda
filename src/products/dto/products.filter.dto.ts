@@ -23,6 +23,12 @@ export class ProductFilterDto {
   })
   keyword: string;
 
+  @ApiProperty({
+    required: false,
+  })
   limit: number;
+  @ApiProperty({
+    required: false,
+  })
   offset: number;
 }

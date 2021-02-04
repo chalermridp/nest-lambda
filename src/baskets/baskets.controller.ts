@@ -7,6 +7,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { BasketsService } from './baskets.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
@@ -19,6 +25,8 @@ export class BasketsController {
   constructor(private basketsService: BasketsService) {}
 
   @Get('/:basketId')
+  @ApiOperation({ summary: 'Get Basket by Id' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async getById(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
@@ -29,6 +37,8 @@ export class BasketsController {
   }
 
   @Patch('/:basketId')
+  @ApiOperation({ summary: 'Update Basket' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async updateById(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
@@ -44,6 +54,8 @@ export class BasketsController {
   }
 
   @Post('/:basketId/products')
+  @ApiOperation({ summary: 'Update Product in Basket' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async updateBasketProduct(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,

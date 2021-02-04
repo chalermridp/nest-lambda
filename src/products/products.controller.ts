@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { ProductFilterDto } from './dto/products.filter.dto';
 import { ProductsService } from './products.service';
@@ -22,6 +22,7 @@ export class ProductsController {
 
   @Get('/:productId')
   @ApiOperation({ summary: 'Get Product Details' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async getById(
     @Param('productId') productId: string,
     @Query('lang') language: string,
