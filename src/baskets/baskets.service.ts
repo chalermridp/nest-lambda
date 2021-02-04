@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BasketNotFoundException } from 'src/exceptions/basket-not-found.exception';
 import { ProductsService } from 'src/products/products.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
-import { ProductBasketCreateDto } from './dto/product-baskets.create.dto';
+import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
 import { BasketProduct } from './responses/baskets.product';
 import { BasketsResponse } from './responses/baskets.response';
 import { BasketSummary } from './responses/baskets.summary';
@@ -17,14 +17,14 @@ export class BasketsService {
 
     this.baskets['2'] = new BasketsResponse();
     this.baskets['2'].products = [];
-    this.addProductToBasket('2', 'en', { id: '99010101', amount: 3 });
-    this.addProductToBasket('2', 'en', { id: '99010102', amount: 7 });
-    this.addProductToBasket('2', 'en', { id: '99010103', amount: 4 });
-    this.addProductToBasket('2', 'en', { id: '99010104', amount: 11 });
-    this.addProductToBasket('2', 'en', { id: '99010105', amount: 23 });
-    this.addProductToBasket('2', 'en', { id: '99010106', amount: 50 });
-    this.addProductToBasket('2', 'en', { id: '99010107', amount: 3 });
-    this.addProductToBasket('2', 'en', { id: '99010108', amount: 19 });
+    this.updateBasketProduct('2', 'en', { id: '99010101', amount: 3 });
+    this.updateBasketProduct('2', 'en', { id: '99010102', amount: 7 });
+    this.updateBasketProduct('2', 'en', { id: '99010103', amount: 4 });
+    this.updateBasketProduct('2', 'en', { id: '99010104', amount: 11 });
+    this.updateBasketProduct('2', 'en', { id: '99010105', amount: 23 });
+    this.updateBasketProduct('2', 'en', { id: '99010106', amount: 50 });
+    this.updateBasketProduct('2', 'en', { id: '99010107', amount: 3 });
+    this.updateBasketProduct('2', 'en', { id: '99010108', amount: 19 });
   }
 
   async getById(basketId: string, language: string): Promise<BasketsResponse> {
@@ -90,10 +90,10 @@ export class BasketsService {
     return await this.getById(basketId, language);
   }
 
-  async addProductToBasket(
+  async updateBasketProduct(
     basketId: string,
     language: string,
-    addProductToBasketDto: ProductBasketCreateDto,
+    updateBasketProductDto: ProductBasketUpdateDto,
   ) {
     const basket = this.baskets[basketId];
     if (typeof basket === 'undefined') {
@@ -104,7 +104,7 @@ export class BasketsService {
     }
 
     const response = await this.productsService.getByIdV2(
-      addProductToBasketDto.id,
+      updateBasketProductDto.id,
       language,
     );
     const product = response.product;
@@ -113,13 +113,13 @@ export class BasketsService {
       response.product.prices[0];
 
     let basketProduct = basket.products.find(
-      (i) => i.id === addProductToBasketDto.id,
+      (i) => i.id === updateBasketProductDto.id,
     );
     if (basketProduct) {
-      basketProduct.amount += addProductToBasketDto.amount;
+      basketProduct.amount = updateBasketProductDto.amount;
     } else {
       basketProduct = new BasketProduct();
-      basketProduct.amount = addProductToBasketDto.amount;
+      basketProduct.amount = updateBasketProductDto.amount;
       basket.products.push(basketProduct);
     }
 

@@ -10,7 +10,7 @@ import {
 import { BaseResponse } from 'src/common/responses/base.response';
 import { BasketsService } from './baskets.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
-import { ProductBasketCreateDto } from './dto/product-baskets.create.dto';
+import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
 import { BasketProduct } from './responses/baskets.product';
 import { BasketsResponse } from './responses/baskets.response';
 
@@ -44,15 +44,15 @@ export class BasketsController {
   }
 
   @Post('/:basketId/products')
-  async addProductToBasket(
+  async updateBasketProduct(
     @Param('basketId') basketId: string,
     @Query('lang') language: string,
-    @Body() addProductToBasketDto: ProductBasketCreateDto,
+    @Body() updateBasketProductDto: ProductBasketUpdateDto,
   ) {
-    const data = await this.basketsService.addProductToBasket(
+    const data = await this.basketsService.updateBasketProduct(
       basketId,
       language,
-      addProductToBasketDto,
+      updateBasketProductDto,
     );
     const response = new BaseResponse<BasketProduct>(200, 'success', data);
     return response;

@@ -4,7 +4,7 @@ import { S3FileHelper } from 'src/common/utilities/s3-file-helper';
 import { BasketNotFoundException } from 'src/exceptions/basket-not-found.exception';
 import { ProductsService } from 'src/products/products.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
-import { ProductBasketCreateDto } from './dto/product-baskets.create.dto';
+import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
 import { BasketProduct } from './responses/baskets.product';
 import { BasketsResponse } from './responses/baskets.response';
 import { BasketSummary } from './responses/baskets.summary';
@@ -111,10 +111,10 @@ export class BasketsServiceV2 {
     return await this.getById(basketId, language);
   }
 
-  async addProductToBasket(
+  async updateBasketProduct(
     basketId: string,
     language: string,
-    addProductToBasketDto: ProductBasketCreateDto,
+    updateBasketProductDto: ProductBasketUpdateDto,
   ) {
     if (typeof language === 'undefined') {
       language = 'en';
@@ -140,14 +140,14 @@ export class BasketsServiceV2 {
     const basket: BasketsResponse = JSON.parse(basketInS3);
 
     const basketProduct = basket.products.find(
-      (i) => i.id === addProductToBasketDto.id,
+      (i) => i.id === updateBasketProductDto.id,
     );
     if (basketProduct) {
-      basketProduct.amount += addProductToBasketDto.amount;
+      basketProduct.amount = updateBasketProductDto.amount;
     } else {
       const newBasketProduct = new BasketProduct();
-      newBasketProduct.id = addProductToBasketDto.id;
-      newBasketProduct.amount = addProductToBasketDto.amount;
+      newBasketProduct.id = updateBasketProductDto.id;
+      newBasketProduct.amount = updateBasketProductDto.amount;
       basket.products.push(newBasketProduct);
     }
 

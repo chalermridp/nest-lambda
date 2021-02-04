@@ -1,4 +1,4 @@
 export class ProductBasketUpdateDto {
   id: string;
-  amount: number
+  amount: number;
 }
