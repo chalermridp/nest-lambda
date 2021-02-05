@@ -49,11 +49,27 @@ export class BasketsService {
     const response = await axios.get(
       `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_v2_${language}.json`,
     );
-    const productDetails = response.data;
-    basket.products.forEach((value) => {
-      value.name = productDetails.find(
-        (i) => i.product.id === value.id,
-      ).product.title;
+    const products = response.data;
+
+    basket.products.forEach(async (value) => {
+      const productOptional = products.find((i) => i.product.id === value.id);
+      if (productOptional) {
+        const product = productOptional.product;
+        const productPrice =
+          product.prices.find((i) => i.unit_of_measure === 'Each') ||
+          product.prices[0];
+
+        value.name = product.title;
+        value.original_price = productPrice.original_price;
+        value.discounted_price = productPrice.discounted_price;
+        value.unit_price = productPrice.unit_price;
+        value.unit_of_measure = productPrice.unit_of_measure;
+        value.total_price = productPrice.unit_price * value.amount;
+        value.image_url = product.resources[0].url;
+      }
+
+      value.min_amount = 0;
+      value.max_amount = 10;
       const optional = this.getOptionalFields(value.id, language);
       if (optional) {
         value.optional = [];
@@ -80,13 +96,13 @@ export class BasketsService {
     basket.products = basket.products.filter((value) =>
       basketUpdateDto.products.map((i) => i.id).includes(value.id),
     );
+
     basket.products.forEach((value) => {
-      const updateDto = basketUpdateDto.products.find((i) => i.id === value.id);
-      if (updateDto) {
-        value.amount = updateDto.amount;
-        value.total_price = value.unit_price * value.amount;
-      }
+      const dto = basketUpdateDto.products.find((i) => i.id === value.id);
+      value.amount = dto.amount;
     });
+
+    basket.products = basket.products.filter((value) => value.amount > 0);
     return await this.getById(basketId, language);
   }
 
@@ -103,42 +119,19 @@ export class BasketsService {
       );
     }
 
-    const response = await this.productsService.getByIdV2(
-      updateBasketProductDto.id,
-      language,
-    );
-    const product = response.product;
-    const productPrice =
-      response.product.prices.find((i) => i.unit_of_measure === 'Each') ||
-      response.product.prices[0];
-
-    let basketProduct = basket.products.find(
+    const basketProduct = basket.products.find(
       (i) => i.id === updateBasketProductDto.id,
     );
     if (basketProduct) {
       basketProduct.amount = updateBasketProductDto.amount;
     } else {
-      basketProduct = new BasketProduct();
-      basketProduct.amount = updateBasketProductDto.amount;
-      basket.products.push(basketProduct);
+      const newBasketProduct = new BasketProduct();
+      newBasketProduct.id = updateBasketProductDto.id;
+      newBasketProduct.amount = updateBasketProductDto.amount;
+      basket.products.push(newBasketProduct);
     }
-
-    basketProduct.name = product.title;
-    basketProduct.id = product.id;
-    basketProduct.original_price = productPrice.original_price;
-    basketProduct.discounted_price = productPrice.discounted_price;
-    basketProduct.unit_price = productPrice.unit_price;
-    basketProduct.unit_of_measure = productPrice.unit_of_measure;
-    basketProduct.total_price = productPrice.unit_price * basketProduct.amount;
-    basketProduct.min_amount = 0;
-    basketProduct.max_amount = 10;
-    basketProduct.image_url = product.resources[0].url;
-    const optional = this.getOptionalFields(basketProduct.id, language);
-    if (optional) {
-      basketProduct.optional = [];
-      basketProduct.optional.push(optional);
-    }
-    return basketProduct;
+    basket.products = basket.products.filter((value) => value.amount > 0);
+    return await this.getById(basketId, language);
   }
 
   getOptionalFields(productId: string, language: string): any {
@@ -163,10 +156,5 @@ export class BasketsService {
     } else {
       return null;
     }
-  }
-
-  mockBasketProducts() {
-    const products = [];
-    return products;
   }
 }
