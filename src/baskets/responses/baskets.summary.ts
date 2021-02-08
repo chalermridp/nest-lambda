@@ -29,12 +29,25 @@ export class BasketSummary {
       this.order_total = 0;
     }
 
-    this.free_delivery_threshold = 500;
+    this.free_delivery_threshold = 1000;
     this.free_delivery_hint_text = '';
-    if (this.order_total < this.free_delivery_threshold) {
-      this.free_delivery_hint_text = 'Purchase 500.00 baht for free delivery';
-      if (language == 'th') {
-        this.free_delivery_hint_text = 'ซื้อครบ 500.00 บาท ฟรีค่าจัดส่ง';
+    if (this.order_total === 0) {
+      this.free_delivery_hint_text = `Purchase ${this.free_delivery_threshold.toLocaleString(
+        'en',
+      )} Baht for free delivery`;
+      if (language === 'th') {
+        this.free_delivery_hint_text = `ช็อปครบ ${this.free_delivery_threshold.toLocaleString(
+          'en',
+        )} บาท ฟรีค่าจัดส่ง`;
+      }
+    } else if (this.order_total < this.free_delivery_threshold) {
+      this.free_delivery_hint_text = `Purchase ฿ ${(
+        this.free_delivery_threshold - this.order_total
+      ).toLocaleString('en')} more for free delivery`;
+      if (language === 'th') {
+        this.free_delivery_hint_text = `ช็อปเพิ่มอีก ${(
+          this.free_delivery_threshold - this.order_total
+        ).toLocaleString('en')} บาท ฟรีค่าจัดส่ง`;
       }
     }
   }
