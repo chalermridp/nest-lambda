@@ -11,7 +11,9 @@ import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { BasketsServiceV2 } from './baskets.service.v2';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
+import { BookingSlotBasketUpdateDto } from './dto/booking-slot-basket.update.dto';
 import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
+import { BasketBookingSlot } from './responses/baskets.booking-slot';
 import { BasketsResponse } from './responses/baskets.response';
 
 @Controller('v2/baskets')
@@ -61,6 +63,21 @@ export class BasketsControllerV2 {
       updateBasketProductDto,
     );
     const response = new BaseResponse<BasketsResponse>(200, 'success', data);
+    return response;
+  }
+
+  @Patch('/:basketId/booking-slot')
+  @ApiOperation({ summary: 'Update Basket Booking Slot V2' })
+  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
+  async updateBasketBookingSlot(
+    @Param('basketId') basketId: string,
+    @Body() updateBasketBookingSlotDto: BookingSlotBasketUpdateDto,
+  ) {
+    const data = await this.basketsService2.updateBasketBookingSlot(
+      basketId,
+      updateBasketBookingSlotDto,
+    );
+    const response = new BaseResponse<BasketBookingSlot>(200, 'success', data);
     return response;
   }
 }

@@ -1,10 +1,12 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { S3FileHelper } from 'src/common/utilities/s3-file-helper';
 import { BasketNotFoundException } from 'src/exceptions/basket-not-found.exception';
 import { ProductsService } from 'src/products/products.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
+import { BookingSlotBasketUpdateDto } from './dto/booking-slot-basket.update.dto';
 import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
+import { BasketBookingSlot } from './responses/baskets.booking-slot';
 import { BasketProduct } from './responses/baskets.product';
 import { BasketsResponse } from './responses/baskets.response';
 import { BasketSummary } from './responses/baskets.summary';
@@ -196,5 +198,45 @@ export class BasketsServiceV2 {
     } else {
       return null;
     }
+  }
+
+  async updateBasketBookingSlot(
+    basketId: string,
+    updateBasketBookingSlotDto: BookingSlotBasketUpdateDto,
+  ): Promise<BasketBookingSlot> {
+    if (
+      isNaN(updateBasketBookingSlotDto.expire_in_minute) ||
+      updateBasketBookingSlotDto.expire_in_minute < 0
+    ) {
+      throw new BadRequestException(
+        'expire_in_minute must be equal or more than 0',
+        'invalid_params',
+      );
+    }
+    const basketInS3 = await this.s3FileHelper.getPublicFile(
+      this.BUCKET_NAME,
+      `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
+    );
+    if (!basketInS3) {
+      throw new BasketNotFoundException(
+        'basket_not_found',
+        'basket does not exist',
+      );
+    }
+
+    const basket: BasketsResponse = JSON.parse(basketInS3);
+
+    const expireDateTime = new Date();
+    expireDateTime.setMinutes(
+      expireDateTime.getMinutes() + updateBasketBookingSlotDto.expire_in_minute,
+    );
+    basket.booking_slot.expire_datetime = expireDateTime;
+    const content = JSON.stringify(basket);
+    await this.s3FileHelper.uploadPublicFile(
+      this.BUCKET_NAME,
+      `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
+      Buffer.from(content, 'utf8'),
+    );
+    return new BasketBookingSlot(expireDateTime);
   }
 }
