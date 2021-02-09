@@ -54,14 +54,21 @@ export class BasketsServiceV2 {
       if (productOptional) {
         const product = productOptional.product;
         const productPrice =
-          product.prices.find((i) => i.unit_of_measure === 'Each') ||
-          product.prices[0];
+          product.prices.find(
+            (i) => i.unit_of_measure === 'Each' || i.unit_of_measure === 'Kg',
+          ) || product.prices[0];
 
         value.name = product.title;
         value.original_price = productPrice.original_price;
         value.discounted_price = productPrice.discounted_price;
         value.unit_price = productPrice.unit_price;
         value.unit_of_measure = productPrice.unit_of_measure;
+        if (
+          productPrice.unit_of_measure === 'Kg' &&
+          product.catch_weight_list
+        ) {
+          value.catch_weight_list = product.catch_weight_list;
+        }
         value.total_price = productPrice.unit_price * value.amount;
         value.image_url = product.resources[0].url;
       }

@@ -10,9 +10,15 @@ export class BasketSummary {
 
   constructor(basketProducts: BasketProduct[], language: string) {
     if (basketProducts.length > 0) {
-      this.items = basketProducts
+      const eachProductCount = basketProducts
+        .filter((i) => i.unit_of_measure === 'Each')
         .map((i) => i.amount)
         .reduce((sum, current) => sum + current);
+      const kgProductCount = basketProducts.filter(
+        (i) => i.unit_of_measure === 'Kg',
+      ).length;
+
+      this.items = eachProductCount + kgProductCount;
       this.guide_price = basketProducts
         .map((i) => i.original_price * i.amount)
         .reduce((sum, current) => sum + current);

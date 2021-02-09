@@ -1,3 +1,5 @@
+import { ProductCatchWeight } from 'src/products/response/product-catch-weight';
+
 export class BasketProduct {
   id: string;
   original_price: number;
@@ -7,6 +9,7 @@ export class BasketProduct {
   total_price: number;
   name: string;
   unit_of_measure: string;
+  catch_weight_list: ProductCatchWeight[];
   min_amount: number;
   max_amount: number;
   image_url: string;
