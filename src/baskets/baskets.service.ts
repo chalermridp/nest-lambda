@@ -17,14 +17,46 @@ export class BasketsService {
 
     this.baskets['2'] = new BasketsResponse();
     this.baskets['2'].products = [];
-    this.updateBasketProduct('2', 'en', { id: '99010101', amount: 3 });
-    this.updateBasketProduct('2', 'en', { id: '99010102', amount: 7 });
-    this.updateBasketProduct('2', 'en', { id: '99010103', amount: 4 });
-    this.updateBasketProduct('2', 'en', { id: '99010104', amount: 11 });
-    this.updateBasketProduct('2', 'en', { id: '99010105', amount: 23 });
-    this.updateBasketProduct('2', 'en', { id: '99010106', amount: 50 });
-    this.updateBasketProduct('2', 'en', { id: '99010107', amount: 3 });
-    this.updateBasketProduct('2', 'en', { id: '99010108', amount: 19 });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010101',
+      amount: 3,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010102',
+      amount: 7,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010103',
+      amount: 4,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010104',
+      amount: 11,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010105',
+      amount: 23,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010106',
+      amount: 50,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010107',
+      amount: 3,
+      unit_of_measure: 'Each',
+    });
+    this.updateBasketProduct('2', 'en', {
+      id: '99010108',
+      amount: 19,
+      unit_of_measure: 'Each',
+    });
   }
 
   async getById(basketId: string, language: string): Promise<BasketsResponse> {

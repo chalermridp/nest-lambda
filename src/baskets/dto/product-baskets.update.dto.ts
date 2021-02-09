@@ -10,4 +10,10 @@ export class ProductBasketUpdateDto {
     required: true,
   })
   amount: number;
+
+  @ApiProperty({
+    required: true,
+    default: 'Each',
+  })
+  unit_of_measure: string;
 }

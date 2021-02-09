@@ -2,7 +2,6 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { S3FileHelper } from 'src/common/utilities/s3-file-helper';
 import { BasketNotFoundException } from 'src/exceptions/basket-not-found.exception';
-import { ProductsService } from 'src/products/products.service';
 import { BasketUpdateDto } from './dto/baskets.update.dto';
 import { BookingSlotBasketUpdateDto } from './dto/booking-slot-basket.update.dto';
 import { ProductBasketUpdateDto } from './dto/product-baskets.update.dto';
@@ -13,10 +12,7 @@ import { BasketSummary } from './responses/baskets.summary';
 
 @Injectable()
 export class BasketsServiceV2 {
-  constructor(
-    private productsService: ProductsService,
-    private s3FileHelper: S3FileHelper,
-  ) {}
+  constructor(private s3FileHelper: S3FileHelper) {}
 
   private BUCKET_NAME = 'oh-shopping-online';
   private BASKET_FOLDER_NAME = 'basket';
@@ -49,36 +45,39 @@ export class BasketsServiceV2 {
     );
     const products = response.data;
 
-    basket.products.forEach(async (value) => {
-      const productOptional = products.find((i) => i.product.id === value.id);
+    basket.products.forEach(async (basketProduct) => {
+      const productOptional = products.find(
+        (p) => p.product.id === basketProduct.id,
+      );
       if (productOptional) {
         const product = productOptional.product;
         const productPrice =
           product.prices.find(
-            (i) => i.unit_of_measure === 'Each' || i.unit_of_measure === 'Kg',
+            (p) => p.unit_of_measure === basketProduct.unit_of_measure,
           ) || product.prices[0];
 
-        value.name = product.title;
-        value.original_price = productPrice.original_price;
-        value.discounted_price = productPrice.discounted_price;
-        value.unit_price = productPrice.unit_price;
-        value.unit_of_measure = productPrice.unit_of_measure;
+        basketProduct.name = product.title;
+        basketProduct.original_price = productPrice.original_price;
+        basketProduct.discounted_price = productPrice.discounted_price;
+        basketProduct.unit_price = productPrice.unit_price;
+        basketProduct.unit_of_measure = productPrice.unit_of_measure;
         if (
           productPrice.unit_of_measure === 'Kg' &&
           product.catch_weight_list
         ) {
-          value.catch_weight_list = product.catch_weight_list;
+          basketProduct.catch_weight_list = product.catch_weight_list;
         }
-        value.total_price = productPrice.unit_price * value.amount;
-        value.image_url = product.resources[0].url;
+        basketProduct.total_price =
+          productPrice.unit_price * basketProduct.amount;
+        basketProduct.image_url = product.resources[0].url;
       }
 
-      value.min_amount = 0;
-      value.max_amount = 10;
-      const optional = this.getOptionalFields(value.id, language);
+      basketProduct.min_amount = 0;
+      basketProduct.max_amount = 10;
+      const optional = this.getOptionalFields(basketProduct.id, language);
       if (optional) {
-        value.optional = [];
-        value.optional.push(optional);
+        basketProduct.optional = [];
+        basketProduct.optional.push(optional);
       }
     });
     basket.summary = new BasketSummary(basket.products, language);
@@ -111,16 +110,21 @@ export class BasketsServiceV2 {
       );
     }
     const basket: BasketsResponse = JSON.parse(basketInS3);
-    basket.products = basket.products.filter((value) =>
-      basketUpdateDto.products.map((i) => i.id).includes(value.id),
-    );
 
-    basket.products.forEach((value) => {
-      const dto = basketUpdateDto.products.find((i) => i.id === value.id);
-      value.amount = dto.amount;
+    const basketProducts = [];
+    basketUpdateDto.products.forEach((dto) => {
+      const unitOfMeasure =
+        typeof dto.unit_of_measure !== 'undefined'
+          ? dto.unit_of_measure
+          : 'Each';
+
+      const basketProduct = new BasketProduct();
+      basketProduct.id = dto.id;
+      basketProduct.amount = dto.amount;
+      basketProduct.unit_of_measure = unitOfMeasure;
+      basketProducts.push(basketProduct);
     });
-
-    basket.products = basket.products.filter((value) => value.amount > 0);
+    basket.products = basketProducts.filter((value) => value.amount > 0);
 
     const content = JSON.stringify(basket);
     await this.s3FileHelper.uploadPublicFile(
@@ -163,12 +167,18 @@ export class BasketsServiceV2 {
     const basketProduct = basket.products.find(
       (i) => i.id === updateBasketProductDto.id,
     );
+    const unitOfMeasure =
+      typeof updateBasketProductDto.unit_of_measure !== 'undefined'
+        ? updateBasketProductDto.unit_of_measure
+        : 'Each';
     if (basketProduct) {
       basketProduct.amount = updateBasketProductDto.amount;
+      basketProduct.unit_of_measure = unitOfMeasure;
     } else {
       const newBasketProduct = new BasketProduct();
       newBasketProduct.id = updateBasketProductDto.id;
       newBasketProduct.amount = updateBasketProductDto.amount;
+      newBasketProduct.unit_of_measure = unitOfMeasure;
       basket.products.push(newBasketProduct);
     }
     basket.products = basket.products.filter((value) => value.amount > 0);
