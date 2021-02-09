@@ -256,4 +256,27 @@ export class BasketsServiceV2 {
     );
     return new BasketBookingSlot(expireDateTime);
   }
+
+  async deleteBasketBookingSlot(basketId: string): Promise<BasketBookingSlot> {
+    const basketInS3 = await this.s3FileHelper.getPublicFile(
+      this.BUCKET_NAME,
+      `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
+    );
+    if (!basketInS3) {
+      throw new BasketNotFoundException(
+        'basket_not_found',
+        'basket does not exist',
+      );
+    }
+
+    const basket: BasketsResponse = JSON.parse(basketInS3);
+    basket.booking_slot.expire_datetime = null;
+    const content = JSON.stringify(basket);
+    await this.s3FileHelper.uploadPublicFile(
+      this.BUCKET_NAME,
+      `${this.BASKET_FOLDER_NAME}/${basketId}.json`,
+      Buffer.from(content, 'utf8'),
+    );
+    return new BasketBookingSlot(null);
+  }
 }

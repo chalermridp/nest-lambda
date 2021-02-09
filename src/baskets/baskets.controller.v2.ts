@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -68,7 +69,6 @@ export class BasketsControllerV2 {
 
   @Patch('/:basketId/booking-slot')
   @ApiOperation({ summary: 'Update Basket Booking Slot V2' })
-  @ApiQuery({ name: 'lang', required: false, enum: ['en', 'th'] })
   async updateBasketBookingSlot(
     @Param('basketId') basketId: string,
     @Body() updateBasketBookingSlotDto: BookingSlotBasketUpdateDto,
@@ -77,6 +77,14 @@ export class BasketsControllerV2 {
       basketId,
       updateBasketBookingSlotDto,
     );
+    const response = new BaseResponse<BasketBookingSlot>(200, 'success', data);
+    return response;
+  }
+
+  @Delete('/:basketId/booking-slot')
+  @ApiOperation({ summary: 'Delete Basket Booking Slot V2' })
+  async deleteBasketBookingSlot(@Param('basketId') basketId: string) {
+    const data = await this.basketsService2.deleteBasketBookingSlot(basketId);
     const response = new BaseResponse<BasketBookingSlot>(200, 'success', data);
     return response;
   }
