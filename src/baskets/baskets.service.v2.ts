@@ -131,7 +131,7 @@ export class BasketsServiceV2 {
       const existingBasketProduct = basket.products.find(
         (i) => i.id === dto.id,
       );
-      if (existingBasketProduct) {
+      if (existingBasketProduct && existingBasketProduct.created_at) {
         basketProduct.created_at = existingBasketProduct.created_at;
       } else {
         basketProduct.created_at = new Date();
