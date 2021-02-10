@@ -16,4 +16,9 @@ export class ProductBasketUpdateDto {
     default: 'Each',
   })
   unit_of_measure: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  created_at: Date;
 }

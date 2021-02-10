@@ -14,4 +14,5 @@ export class BasketProduct {
   max_amount: number;
   image_url: string;
   optional: any[];
+  created_at: Date;
 }

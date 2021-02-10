@@ -80,6 +80,11 @@ export class BasketsServiceV2 {
         basketProduct.optional.push(optional);
       }
     });
+    basket.products = basket.products.sort((a, b) =>
+      a.created_at && b.created_at
+        ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        : new Date().getTime(),
+    );
     basket.summary = new BasketSummary(basket.products, language);
     return basket;
   }
@@ -122,6 +127,12 @@ export class BasketsServiceV2 {
       basketProduct.id = dto.id;
       basketProduct.amount = dto.amount;
       basketProduct.unit_of_measure = unitOfMeasure;
+      if (!basketProduct.created_at) {
+        basketProduct.created_at = new Date();
+        if (dto.created_at) {
+          basketProduct.created_at = dto.created_at;
+        }
+      }
       basketProducts.push(basketProduct);
     });
     basket.products = basketProducts.filter((value) => value.amount > 0);
@@ -179,6 +190,10 @@ export class BasketsServiceV2 {
       newBasketProduct.id = updateBasketProductDto.id;
       newBasketProduct.amount = updateBasketProductDto.amount;
       newBasketProduct.unit_of_measure = unitOfMeasure;
+      newBasketProduct.created_at = new Date();
+      if (updateBasketProductDto.created_at) {
+        newBasketProduct.created_at = updateBasketProductDto.created_at;
+      }
       basket.products.push(newBasketProduct);
     }
     basket.products = basket.products.filter((value) => value.amount > 0);
