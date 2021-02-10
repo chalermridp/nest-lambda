@@ -59,7 +59,7 @@ export class BasketSummary {
         this.free_delivery_hint_text = `ช็อปเพิ่มอีก ${condition} บาท ฟรีค่าจัดส่ง`;
       }
     } else if (this.order_total >= this.free_delivery_threshold) {
-      this.free_delivery_hint_text = `Congratulations - You got free delivery!`;
+      this.free_delivery_hint_text = `Congratulations - You get free delivery!`;
       if (language === 'th') {
         this.free_delivery_hint_text = `ยินดีด้วย - คุณได้รับฟรีค่าจัดส่ง!`;
       }
