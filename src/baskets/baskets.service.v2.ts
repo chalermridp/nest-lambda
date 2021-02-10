@@ -127,7 +127,13 @@ export class BasketsServiceV2 {
       basketProduct.id = dto.id;
       basketProduct.amount = dto.amount;
       basketProduct.unit_of_measure = unitOfMeasure;
-      if (!basketProduct.created_at) {
+
+      const existingBasketProduct = basket.products.find(
+        (i) => i.id === dto.id,
+      );
+      if (existingBasketProduct) {
+        basketProduct.created_at = existingBasketProduct.created_at;
+      } else {
         basketProduct.created_at = new Date();
         if (dto.created_at) {
           basketProduct.created_at = dto.created_at;
