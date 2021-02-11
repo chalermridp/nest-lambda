@@ -123,9 +123,17 @@ export class BasketsServiceV2 {
           ? dto.unit_of_measure
           : 'Each';
 
+      if (isNaN(dto.amount) || dto.amount < 0) {
+        throw new BadRequestException(
+          'amount must be equal or more than 0',
+          'invalid_params',
+        );
+      }
+      const amount: number = +dto.amount;
+
       const basketProduct = new BasketProduct();
       basketProduct.id = dto.id;
-      basketProduct.amount = dto.amount;
+      basketProduct.amount = amount;
       basketProduct.unit_of_measure = unitOfMeasure;
 
       const existingBasketProduct = basket.products.find(
@@ -181,6 +189,17 @@ export class BasketsServiceV2 {
 
     const basket: BasketsResponse = JSON.parse(basketInS3);
 
+    if (
+      isNaN(updateBasketProductDto.amount) ||
+      updateBasketProductDto.amount < 0
+    ) {
+      throw new BadRequestException(
+        'amount must be equal or more than 0',
+        'invalid_params',
+      );
+    }
+    const amount: number = +updateBasketProductDto.amount;
+
     const basketProduct = basket.products.find(
       (i) => i.id === updateBasketProductDto.id,
     );
@@ -189,12 +208,12 @@ export class BasketsServiceV2 {
         ? updateBasketProductDto.unit_of_measure
         : 'Each';
     if (basketProduct) {
-      basketProduct.amount = updateBasketProductDto.amount;
+      basketProduct.amount = amount;
       basketProduct.unit_of_measure = unitOfMeasure;
     } else {
       const newBasketProduct = new BasketProduct();
       newBasketProduct.id = updateBasketProductDto.id;
-      newBasketProduct.amount = updateBasketProductDto.amount;
+      newBasketProduct.amount = amount;
       newBasketProduct.unit_of_measure = unitOfMeasure;
       newBasketProduct.created_at = new Date();
       if (updateBasketProductDto.created_at) {
