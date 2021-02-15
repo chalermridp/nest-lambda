@@ -6,6 +6,7 @@ import { HealthController } from './health/health.controller';
 import { TerminusModule } from '@nestjs/terminus';
 import { PromotionBannersModule } from './promotion-banners/promotion-banners.module';
 import { BasketsModule } from './baskets/baskets.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { BasketsModule } from './baskets/baskets.module';
     ProductsModule,
     PromotionBannersModule,
     BasketsModule,
+    AccountsModule,
   ],
   controllers: [HealthController],
 })

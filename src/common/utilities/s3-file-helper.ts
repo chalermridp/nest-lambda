@@ -28,6 +28,7 @@ export class S3FileHelper {
         return output.Body.toString();
       })
       .catch((error) => {
+        console.log(error);
         if (error.statusCode === 404) {
           return null;
         }
