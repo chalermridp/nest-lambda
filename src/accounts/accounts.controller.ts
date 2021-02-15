@@ -1,31 +1,31 @@
 import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { AccountsService } from './accounts.service';
-import { AccountsAddressUpdateDto } from './dto/accounts.address.update.dto';
+import { AccountsDeliveryAddressUpdateDto } from './dto/accounts.delivery-address.update.dto';
 import { AccountsAddressResponse } from './responses/accounts.address.response';
 
 @Controller('v1/accounts')
 export class AccountsController {
   constructor(private accountsService: AccountsService) {}
 
-  @Get('/:accountId/addresses')
-  async getAddresses(
+  @Get('/:accountId/addresses/deliveries')
+  async getDeliveryAddress(
     @Param('accountId') accountId: string,
   ): Promise<BaseResponse<AccountsAddressResponse[]>> {
-    const data = await this.accountsService.getAddresses(accountId);
+    const data = await this.accountsService.getDeliveryAddress(accountId);
     return new BaseResponse(200, 'success', data);
   }
 
-  @Put('/:accountId/addresses/:uuid')
-  async updateAddresses(
+  @Put('/:accountId/addresses/deliveries/:uuid')
+  async updateDeliveryAddress(
     @Param('accountId') accountId: string,
     @Param('uuid') uuid: string,
-    @Body() updateAddressDto: AccountsAddressUpdateDto,
+    @Body() dto: AccountsDeliveryAddressUpdateDto,
   ): Promise<BaseResponse<AccountsAddressResponse>> {
-    const data = await this.accountsService.updateAddress(
+    const data = await this.accountsService.updateDeliveryAddress(
       accountId,
       uuid,
-      updateAddressDto,
+      dto,
     );
     return new BaseResponse(200, 'success', data);
   }

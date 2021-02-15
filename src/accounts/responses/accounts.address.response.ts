@@ -1,6 +1,5 @@
 export class AccountsAddressResponse {
   uuid: string;
-  type: string;
   place_name: string;
   recipient: string;
   address_number: string;

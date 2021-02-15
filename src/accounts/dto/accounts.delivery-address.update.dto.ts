@@ -1,4 +1,4 @@
-export class AccountsAddressUpdateDto {
+export class AccountsDeliveryAddressUpdateDto {
   place_name: string;
   recipient: string;
   address_number: string;
