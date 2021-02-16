@@ -9,6 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { BaseExceptionFilter } from './filters/base-exception.filter';
 import { UnexpectedErrorFilter } from './filters/unexpected-error.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 let lambdaProxy: Server;
 
@@ -34,6 +35,7 @@ async function bootstrap() {
     new HttpExceptionFilter(),
     new BaseExceptionFilter(),
   );
+  nestApp.useGlobalPipes(new ValidationPipe());
   await nestApp.init();
 
   return serverlessExpress.createServer(expressServer);

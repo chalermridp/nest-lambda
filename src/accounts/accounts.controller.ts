@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Put,
+} from '@nestjs/common';
 import { BaseResponse } from 'src/common/responses/base.response';
 import { AccountsService } from './accounts.service';
 import { AccountsDeliveryAddressUpdateDto } from './dto/accounts.delivery-address.update.dto';
@@ -19,7 +26,7 @@ export class AccountsController {
   @Put('/:accountId/addresses/deliveries/:uuid')
   async updateDeliveryAddress(
     @Param('accountId') accountId: string,
-    @Param('uuid') uuid: string,
+    @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: AccountsDeliveryAddressUpdateDto,
   ): Promise<BaseResponse<AccountsAddressResponse>> {
     const data = await this.accountsService.updateDeliveryAddress(
