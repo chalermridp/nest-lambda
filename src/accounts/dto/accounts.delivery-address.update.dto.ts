@@ -1,4 +1,4 @@
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsNotEmpty, Length, ValidateIf } from 'class-validator';
 
 export class AccountsDeliveryAddressUpdateDto {
   @IsNotEmpty()
@@ -26,7 +26,7 @@ export class AccountsDeliveryAddressUpdateDto {
   @IsNotEmpty()
   @Length(1, 10)
   contact_number: string;
+  @ValidateIf((o) => o.note_to_delivery)
   @Length(1, 200)
-  @IsNotEmpty()
   note_to_delivery: string;
 }
