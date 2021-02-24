@@ -1,6 +1,6 @@
 import { DeliverySlotsDetailsResponse } from './delivery-slots-details.response';
 
 export class DeliverySlotsResponse {
-  date: Date;
+  date: string;
   slots: DeliverySlotsDetailsResponse[];
 }

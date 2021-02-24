@@ -24,17 +24,18 @@ export class DeliverySlotsService {
       );
     }
     const results: DeliverySlotsResponse[] = [];
-    const currentDate = start;
+    const currentDate = new Date(start);
+    const startString = start.toISOString().split('T')[0];
     while (currentDate <= end) {
       const result: DeliverySlotsResponse = new DeliverySlotsResponse();
-      result.date = currentDate;
+      result.date = currentDate.toISOString().split('T')[0]
       if (type === 'homeDelivery') {
         result.slots = this.getSlotsForHomeDelivery(
-          currentDate.getDate() === start.getDate(),
+            result.date === startString ? false : Math.random() < 0.8,
         );
       } else {
         result.slots = this.getSlotsForClickAndCollect(
-          currentDate.getDate() === start.getDate(),
+            result.date === startString ? false : Math.random() < 0.8,
         );
       }
       results.push(result);
