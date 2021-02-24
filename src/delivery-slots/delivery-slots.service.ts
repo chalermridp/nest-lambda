@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InvalidParamsException } from 'src/exceptions/invalid-params.exception';
 import { DeliverySlotsDetailsResponse } from './response/delivery-slots-details.response';
 import { DeliverySlotsResponse } from './response/delivery-slots.response';
 
@@ -10,18 +11,12 @@ export class DeliverySlotsService {
     endDate: string,
   ): DeliverySlotsResponse[] {
     if (type !== 'homeDelivery' && type !== 'clickAndCollect') {
-      throw new HttpException(
-        '{ "error_name": "invalid_params", "error_message": "type must be \'homeDelivery\' or \'clickAndCollect\'" }',
-        400,
-      );
+        throw new InvalidParamsException('type must be \'homeDelivery\' or \'clickAndCollect\'"');
     }
     const start = new Date(startDate);
     const end = new Date(endDate);
     if (start > end) {
-      throw new HttpException(
-        '{ "error_name": "invalid_params", "error_message": "startDate must be equal or before endDate" }',
-        400,
-      );
+        throw new InvalidParamsException('startDate must be equal or before endDate');
     }
     const results: DeliverySlotsResponse[] = [];
     const currentDate = new Date(start);
