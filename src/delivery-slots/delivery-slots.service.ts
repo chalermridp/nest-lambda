@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InvalidParamsException } from 'src/exceptions/invalid-params.exception';
 import { DeliverySlotsDetailsResponse } from './response/delivery-slots-details.response';
 import { DeliverySlotsResponse } from './response/delivery-slots.response';
@@ -11,26 +11,29 @@ export class DeliverySlotsService {
     endDate: string,
   ): DeliverySlotsResponse[] {
     if (type !== 'homeDelivery' && type !== 'clickAndCollect') {
-        throw new InvalidParamsException('type must be \'homeDelivery\' or \'clickAndCollect\'"');
+      throw new InvalidParamsException(
+        "type must be 'homeDelivery' or 'clickAndCollect'\"",
+      );
     }
     const start = new Date(startDate);
     const end = new Date(endDate);
     if (start > end) {
-        throw new InvalidParamsException('startDate must be equal or before endDate');
+      throw new InvalidParamsException(
+        'startDate must be equal or before endDate',
+      );
     }
     const results: DeliverySlotsResponse[] = [];
     const currentDate = new Date(start);
     const startString = start.toISOString().split('T')[0];
     while (currentDate <= end) {
       const result: DeliverySlotsResponse = new DeliverySlotsResponse();
-      result.date = currentDate.toISOString().split('T')[0]
+      result.date = currentDate.toISOString().split('T')[0];
       if (type === 'homeDelivery') {
-        result.slots = this.getSlotsForHomeDelivery(
-            result.date === startString ? false : Math.random() < 0.8,
-        );
+        result.slots = this.getSlotsForHomeDelivery(result.date, startString);
       } else {
         result.slots = this.getSlotsForClickAndCollect(
-            result.date === startString ? false : Math.random() < 0.8,
+          result.date,
+          startString,
         );
       }
       results.push(result);
@@ -39,39 +42,93 @@ export class DeliverySlotsService {
     return results;
   }
 
-  getSlotsForHomeDelivery(available: boolean) {
+  getSlotsForHomeDelivery(currentDate: string, startDate: string) {
     const results: DeliverySlotsDetailsResponse[] = [];
     results.push(
-      new DeliverySlotsDetailsResponse('10:00', '12:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '10:00',
+        '12:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('12:00', '14:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '12:00',
+        '14:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('14:00', '16:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '14:00',
+        '16:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('16:00', '18:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '16:00',
+        '18:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('18:00', '20:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '18:00',
+        '20:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('20:00', '22:00', available, 70, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '20:00',
+        '22:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        70,
+        'THB',
+      ),
     );
     return results;
   }
 
-  getSlotsForClickAndCollect(available: boolean) {
+  getSlotsForClickAndCollect(currentDate: string, startDate: string) {
     const results: DeliverySlotsDetailsResponse[] = [];
     results.push(
-      new DeliverySlotsDetailsResponse('12:00', '14:00', available, 0, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '12:00',
+        '14:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        0,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('14:00', '16:00', available, 0, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '14:00',
+        '16:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        0,
+        'THB',
+      ),
     );
     results.push(
-      new DeliverySlotsDetailsResponse('16:00', '18:00', available, 0, 'THB'),
+      new DeliverySlotsDetailsResponse(
+        '16:00',
+        '18:00',
+        currentDate === startDate ? false : Math.random() < 0.8,
+        0,
+        'THB',
+      ),
     );
     return results;
   }
