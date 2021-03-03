@@ -37,7 +37,7 @@ export class ProductsControllerV2 {
     @Query('lang') language: string,
   ) {
     const data = await this.productsService.getFilteredV2(filterDto, language);
-    const response = new BaseResponse<ProductsResponse>(
+    const response = new BaseResponse<ProductsResponseV2>(
       200,
       'success',
       data,

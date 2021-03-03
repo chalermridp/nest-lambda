@@ -26,7 +26,7 @@ export class ProductsService {
     return products;
   }
 
-  async getAllV2(language: string): Promise<Product[]> {
+  async getAllProductDetailsV2(language: string): Promise<ProductDetailsResponseV2[]> {
     const response = await axios.get(
       `https://oh-shopping-online.s3-ap-southeast-1.amazonaws.com/product/product_detail_v2_${language}.json`,
     );
@@ -82,7 +82,7 @@ export class ProductsService {
     return data;
   }
 
-  async getFilteredV2(filterDto: ProductFilterDtoV2, language: string): Promise<ProductsResponse> {
+  async getFilteredV2(filterDto: ProductFilterDtoV2, language: string): Promise<ProductsResponseV2> {
     if (typeof language === 'undefined') {
       language = 'en';
     }
@@ -93,14 +93,11 @@ export class ProductsService {
       );
     }
 
-    let products = await this.getAllV2(language);
+    let products: ProductDetailsResponseV2[] = await this.getAllProductDetailsV2(language);
     if (typeof filterDto.ids !== 'undefined') {
       const ids = filterDto.ids.split(',');
-      console.log(ids);
-      console.log(products.length)
-      products = products.filter(i => ids.includes(i.productId));
+      products = products.filter(i => ids.includes(i.product.id));
     }
-    console.log(products.length)
 
 
     let { limit, offset } = filterDto;
@@ -115,7 +112,7 @@ export class ProductsService {
     limit = +limit;
     products = products.slice(offset, offset + limit);
 
-    const data = new ProductsResponse();
+    const data = new ProductsResponseV2();
     data.total = total;
     data.offset = offset;
     data.limit = limit;
