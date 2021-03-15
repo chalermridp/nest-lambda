@@ -8,6 +8,7 @@ import { PromotionBannersModule } from './promotion-banners/promotion-banners.mo
 import { BasketsModule } from './baskets/baskets.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { DeliverySlotsModule } from './delivery-slots/delivery-slots.module';
+import { StoresModule } from './stores/stores.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DeliverySlotsModule } from './delivery-slots/delivery-slots.module';
     BasketsModule,
     AccountsModule,
     DeliverySlotsModule,
+    StoresModule,
   ],
   controllers: [HealthController],
 })
