@@ -6,14 +6,14 @@ import { StoresService } from './stores.service';
 
 @Controller('v1/stores')
 export class StoresController {
-    constructor(private storesService: StoresService) {
-        this.storesService = storesService;
-    }
+  constructor(private storesService: StoresService) {
+    this.storesService = storesService;
+  }
 
-    @Get('/nearest')
-    async getNearest(@Query() filterDto: StoresFilterDto) {
-        const data = await this.storesService.getNearest(filterDto);
-        const response = new BaseResponse<StoresResponse>(200, 'success', data);
-        return response;
-    }
+  @Get('/nearest')
+  async getNearest(@Query() filterDto: StoresFilterDto) {
+    const data = await this.storesService.getNearest(filterDto);
+    const response = new BaseResponse<StoresResponse>(200, 'success', data);
+    return response;
+  }
 }
